@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tagihan Listrik</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.bill-table {
+  width: 50%;
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+.bill-table th, .bill-table td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.bill-table th {
+  background-color: #f2f2f2;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1 align="center">MENGHITUNG BIAYA TAGIHAN LISTRIK <br>PLN BANDUNG </h1>
+  <form name="fform">
+    <table>
+      <tr>
+        <td>Nama Pelanggan</td>
+        <td><input type="text" name="inama" required></td>
+      </tr>
+      <tr>
+        <td>Kategori</td>
+        <td>
+          <select name="ikategori" onchange="hitung()">
+            <option value="SOSIAL">SOSIAL</option>
+            <option value="RUMAH">RUMAH</option>
+            <option value="INDUSTRI">INDUSTRI</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Jumlah Pemakaian Listrik</td>
+        <td><input type="number" name="ipemakaian" required></td>
+      </tr>
+    </table>
+
+    <button type="button" onclick="hitung()">Proses</button>
+    <button type="reset">Reset</button>
+  </form>
+
+  <div id="bill-details">
+    <h2>Rincian Tagihan</h2>
+    <table class="bill-table">
+      <thead>
+        <tr>
+          <th>Jumlah</th>
+          <th>Tarif per KWH</th>
+          <th>Abodemen</th>
+          <th>SubTotal</th>
+        </tr>
+      </thead>
+      <tbody id="bill-items">
+        </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">Subtotal</td>
+          <td id="subtotal"></td>
+        </tr>
+        <tr>
+          <td colspan="3">Pajak</td>
+          <td id="pajak"></td>
+        </tr>
+        <tr>
+          <td colspan="3">Bayar</td>
+          <td id="bayar"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>
+
+<script>
+function hitung() {
+  var nama = document.fform.inama.value;
+  var kategori = document.fform.ikategori.value;
+  var pemakaian = parseInt(document.fform.ipemakaian.value);
+
+  if (nama == "" || kategori == "" || pemakaian == "") {
+    alert("Silakan isi semua data terlebih dahulu!");
+    return;
+  }
+
+  var billItems = document.getElementById("bill-items");
+  billItems.innerHTML = ""; 
+
+  var tarif = 0;
+  var abodemen = 0;
+  var pajak = 0;
+
+  switch (kategori) {
+    case "SOSIAL":
+      tarif = 300;
+      abodemen = 10000;
+      pajak = 0;
+      break;
+    case "RUMAH":
+      tarif = 500;
+      abodemen = 30000;
+      pajak = 10;
+      break;
+    case "INDUSTRI":
+      tarif = 1000;
+      abodemen = 50000;
+      pajak = 30;
+      break;
+  }
+
+  var subtotal = 0;
+  for (var i = 1; i <= pemakaian; i++) {
+    var subTotal = (tarif * i) + abodemen;
+    subtotal += subTotal;
+    var row = billItems.insertRow();
+    row.insertCell().innerHTML = i;
+    row.insertCell().innerHTML = tarif;
+    row.insertCell().innerHTML = abodemen;
+    row.insertCell().innerHTML = subTotal;
+  }
+
+  var pajakValue = (subtotal * (pajak / 100));
+  var totalBayar = subtotal + pajakValue;
+
+  document.getElementById("subtotal").innerHTML = subtotal;
+  document.getElementById("pajak").innerHTML = pajakValue;
+  document.getElementById("bayar").innerHTML = totalBayar;
+}
+</script>
+
+</body>
+</html>
